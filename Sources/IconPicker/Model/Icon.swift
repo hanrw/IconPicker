@@ -12,7 +12,7 @@ public enum Icon: Equatable {
     case symbol(name: String)
     case emoji(name: String, emoji: String)
     
-    static var defaultIcon = Self.emoji(name: "grinning", emoji: "😀")
+    static public let defaultIcon = Self.emoji(name: "GRINNING FACE WITH SMILING EYES", emoji: "😁")
 }
 
 public extension Icon {

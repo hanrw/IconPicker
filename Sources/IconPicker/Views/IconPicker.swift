@@ -39,8 +39,8 @@ public struct IconPicker<S: Shape>: View {
     public init(
         selection: Binding<Icon>,
         backgroundShape: S,
-        itemBackgroundColor: Color = .accentColor,
-        itemBackgroundColorSelected: Color = Color(uiColor: UIColor.secondarySystemBackground)
+        itemBackgroundColor: Color = Color(uiColor: UIColor.secondarySystemBackground),
+        itemBackgroundColorSelected: Color = .accentColor
     ) {
         self._selection = selection
         self.backgroundShape = backgroundShape
@@ -76,6 +76,7 @@ public struct IconPicker<S: Shape>: View {
                                 .font(.largeTitle)
                         }
                         .onTapGesture {
+                            print(icon)
                             withAnimation { selection = icon }
                         }
                 }
@@ -117,8 +118,8 @@ struct IconPreview: View {
 public extension IconPicker where S == RoundedRectangle {
     init(
         selection: Binding<Icon>,
-        itemBackgroundColor: Color = .accentColor,
-        itemBackgroundColorSelected: Color = Color(uiColor: UIColor.secondarySystemBackground)
+        itemBackgroundColor: Color = Color(uiColor: UIColor.secondarySystemBackground),
+        itemBackgroundColorSelected: Color = .accentColor
     ) {
         self._selection = selection
         self.backgroundShape = RoundedRectangle(cornerRadius: 15)
