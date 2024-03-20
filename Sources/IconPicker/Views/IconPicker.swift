@@ -114,7 +114,7 @@ struct IconPreview: View {
     }
 }
 
-extension IconPicker where S == RoundedRectangle {
+public extension IconPicker where S == RoundedRectangle {
     init(
         selection: Binding<Icon?>,
         itemBackgroundColor: Color = .accentColor,
