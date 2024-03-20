@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Smile
 
 public struct IconView: View {
     private let icon: Icon
@@ -65,19 +66,25 @@ public struct IconPicker<S: Shape>: View {
             }
             .pickerStyle(.segmented)
             
-            
-            LazyVGrid(columns: [.init(.adaptive(minimum: size + 10))]) {
-                ForEach(icons) { icon in
-                    backgroundShape
-                        .fill(selection == icon ? backgroundColorSelected : backgroundColorDefault)
-                        .frame(width: size + 10, height: size + 10)
-                        .overlay {
-                            IconView(for: icon)
-                                .font(.largeTitle)
-                        }
-                        .onTapGesture {
-                            withAnimation { selection = icon }
-                        }
+            if !icons.isEmpty {
+                LazyVGrid(columns: [.init(.adaptive(minimum: size + 10))]) {
+                    ForEach(icons) { icon in
+                        backgroundShape
+                            .fill(selection == icon ? backgroundColorSelected : backgroundColorDefault)
+                            .frame(width: size + 10, height: size + 10)
+                            .overlay {
+                                IconView(for: icon)
+                                    .font(.largeTitle)
+                            }
+                            .onTapGesture {
+                                withAnimation { selection = icon }
+                            }
+                    }
+                }
+            } else {
+                switch listSelection {
+                    case .symbols: Text("No Symbols Match Search")
+                    case .emojis: Text("No Emojis Match Search")
                 }
             }
         }
@@ -95,6 +102,10 @@ private extension Array where Element == Icon {
     func searched(_ searchText: String) -> [Icon] {
         if searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return self
+        }
+        
+        if isEmoji(character: searchText) {
+            return [.emoji(name: name(emoji: searchText).first ?? "", emoji: searchText)]
         }
         
         return self.filter { icon in
