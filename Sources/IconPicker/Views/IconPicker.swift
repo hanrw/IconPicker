@@ -69,7 +69,7 @@ public struct IconPicker<S: Shape>: View {
             LazyVGrid(columns: [.init(.adaptive(minimum: size + 10))]) {
                 ForEach(icons) { icon in
                     backgroundShape
-                        .fill(selection == icon ? backgroundColorDefault : backgroundColorSelected)
+                        .fill(selection == icon ? backgroundColorSelected : backgroundColorDefault)
                         .frame(width: size + 10, height: size + 10)
                         .overlay {
                             IconView(for: icon)
