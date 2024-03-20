@@ -11,6 +11,8 @@ import Smile
 public enum Icon: Equatable {
     case symbol(name: String)
     case emoji(name: String, emoji: String)
+    
+    static var defaultIcon = Self.emoji(name: "grinning", emoji: "😀")
 }
 
 public extension Icon {

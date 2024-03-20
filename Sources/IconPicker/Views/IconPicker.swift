@@ -28,7 +28,7 @@ public struct IconPicker<S: Shape>: View {
     
     @ScaledMetric(relativeTo: .largeTitle) private var size = 65
     
-    @Binding private var selection: Icon?
+    @Binding private var selection: Icon
     @State private var listSelection: ListOption = .emojis
     @State private var searchText: String = ""
     
@@ -37,7 +37,7 @@ public struct IconPicker<S: Shape>: View {
     private let backgroundColorSelected: Color
     
     public init(
-        selection: Binding<Icon?>,
+        selection: Binding<Icon>,
         backgroundShape: S,
         itemBackgroundColor: Color = .accentColor,
         itemBackgroundColorSelected: Color = Color(uiColor: UIColor.secondarySystemBackground)
@@ -104,7 +104,7 @@ private extension Array where Element == Icon {
 }
 
 struct IconPreview: View {
-    @State private var selection: Icon? = nil
+    @State private var selection: Icon = .defaultIcon
     
     var body: some View {
         NavigationStack {
@@ -116,7 +116,7 @@ struct IconPreview: View {
 
 public extension IconPicker where S == RoundedRectangle {
     init(
-        selection: Binding<Icon?>,
+        selection: Binding<Icon>,
         itemBackgroundColor: Color = .accentColor,
         itemBackgroundColorSelected: Color = Color(uiColor: UIColor.secondarySystemBackground)
     ) {
