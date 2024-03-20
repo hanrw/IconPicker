@@ -76,7 +76,6 @@ public struct IconPicker<S: Shape>: View {
                                 .font(.largeTitle)
                         }
                         .onTapGesture {
-                            print(icon)
                             withAnimation { selection = icon }
                         }
                 }
