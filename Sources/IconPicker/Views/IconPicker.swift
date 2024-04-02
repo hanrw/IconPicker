@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Smile
 
 public struct IconView: View {
     private let icon: Icon
@@ -17,10 +16,10 @@ public struct IconView: View {
     
     public var body: some View {
         switch self.icon {
-            case .symbol(let symbolName):
-                Image(systemName: symbolName)
-            case .emoji(_, let emoji):
-                Text(emoji)
+            case .symbol(let name):
+                Image(systemName: name)
+            case .emoji(let emoji):
+                Text(emoji.character)
         }
     }
 }
@@ -33,28 +32,36 @@ public struct IconPicker<S: Shape>: View {
     @State private var listSelection: ListOption = .emojis
     @State private var searchText: String = ""
     
+    @StateObject private var iconPackage = IconPackage.shared
+    
     private let backgroundShape: S
     private let backgroundColorDefault: Color
     private let backgroundColorSelected: Color
+    private let iconColorDefault: Color
+    private let iconColorSelected: Color
     
     public init(
         selection: Binding<Icon>,
         backgroundShape: S,
         itemBackgroundColor: Color = Color(uiColor: UIColor.secondarySystemBackground),
-        itemBackgroundColorSelected: Color = .accentColor
+        itemBackgroundColorSelected: Color = .accentColor,
+        iconColorDefault: Color = .primary,
+        iconColorSelected: Color = .primary
     ) {
         self._selection = selection
         self.backgroundShape = backgroundShape
         self.backgroundColorDefault = itemBackgroundColor
         self.backgroundColorSelected = itemBackgroundColorSelected
+        self.iconColorDefault = iconColorDefault
+        self.iconColorSelected = iconColorSelected
     }
     
     private var icons: [Icon] {
         switch listSelection {
             case .symbols:
-                return Icon.allSymbols.searched(searchText)
+                return iconPackage.searchSymbols(searchText)
             case .emojis:
-                return Icon.allEmojis.searched(searchText)
+                return iconPackage.searchEmojis(searchText)
         }
     }
     
@@ -75,9 +82,12 @@ public struct IconPicker<S: Shape>: View {
                             .overlay {
                                 IconView(for: icon)
                                     .font(.largeTitle)
+                                    .foregroundStyle(selection == icon ? iconColorSelected : iconColorDefault)
                             }
                             .onTapGesture {
-                                withAnimation { selection = icon }
+                                withAnimation {
+                                    selection = icon
+                                }
                             }
                     }
                 }
@@ -98,22 +108,6 @@ public struct IconPicker<S: Shape>: View {
     }
 }
 
-private extension Array where Element == Icon {
-    func searched(_ searchText: String) -> [Icon] {
-        if searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return self
-        }
-        
-        if isEmoji(character: searchText) {
-            return [.emoji(name: name(emoji: searchText).first ?? "", emoji: searchText)]
-        }
-        
-        return self.filter { icon in
-            icon.id.range(of: searchText, options: .caseInsensitive) != nil
-        }
-    }
-}
-
 struct IconPreview: View {
     @State private var selection: Icon = .defaultIcon
     
@@ -129,16 +123,19 @@ public extension IconPicker where S == RoundedRectangle {
     init(
         selection: Binding<Icon>,
         itemBackgroundColor: Color = Color(uiColor: UIColor.secondarySystemBackground),
-        itemBackgroundColorSelected: Color = .accentColor
+        itemBackgroundColorSelected: Color = .accentColor,
+        iconColorDefault: Color = .primary,
+        iconColorSelected: Color = .primary
     ) {
         self._selection = selection
         self.backgroundShape = RoundedRectangle(cornerRadius: 15)
         self.backgroundColorDefault = itemBackgroundColor
         self.backgroundColorSelected = itemBackgroundColorSelected
+        self.iconColorDefault = iconColorDefault
+        self.iconColorSelected = iconColorSelected
     }
 }
 
 #Preview {
-    //    IconPicker(selection: .constant(nil))
     IconPreview()
 }
